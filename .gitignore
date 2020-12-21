@@ -1,0 +1,16 @@
+FPGAtetrisAI/db/
+FPGAtetrisAI/incremental_db/
+FPGAtetrisAI/simulation/
+FPGAtetrisAI/greybox_tmp/
+FPGAtetrisAI/*.bak
+FPGAtetrisAI/.qsys_edit/
+FPGAtetrisAI/*.rpt
+FPGAtetrisAI/*.cdf
+FPGAtetrisAI/*.done
+FPGAtetrisAI/*.smsg
+FPGAtetrisAI/*.summary
+FPGAtetrisAI/*.jdi
+FPGAtetrisAI/*.pin
+FPGAtetrisAI/*.pof
+FPGAtetrisAI/*.sld
+FPGAtetrisAI/*.qdf
