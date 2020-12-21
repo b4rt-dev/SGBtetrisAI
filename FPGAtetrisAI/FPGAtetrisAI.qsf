@@ -96,7 +96,9 @@ set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to DMG_hsync
 set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to DMG_data0
 set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to DMG_data1
 set_global_assignment -name VERILOG_FILE FPGAtetrisAI.v
+set_global_assignment -name VERILOG_FILE GBreader.v
 set_global_assignment -name VERILOG_FILE ROM.v
 set_global_assignment -name VERILOG_FILE VGA.v
 set_global_assignment -name QIP_FILE PLL.qip
+set_global_assignment -name QIP_FILE FB.qip
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

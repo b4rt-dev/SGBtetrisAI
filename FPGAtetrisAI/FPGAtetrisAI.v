@@ -31,6 +31,24 @@ PLL pll(
 wire [14:0] fb_vga_addr;
 wire [1:0] fb_vga_q;
 
+wire [14:0] fb_gb_addr;
+wire [1:0] fb_gb_data;
+wire fb_gb_we;
+
+
+GBreader gbreader (
+.clk(pclk),
+
+.addr(fb_gb_addr),
+.data(fb_gb_data),
+.we(fb_gb_we),
+
+.hs(DMG_hsync),
+.vs(DMG_vsync),
+.d0(DMG_data0),
+.d1(DMG_data1)
+);
+
 
 //VGA debug
 VGA DebugDisplay (
@@ -45,12 +63,31 @@ VGA DebugDisplay (
 );
 
 
+//Framebuffer
+FB framebuffer (
+//WRITE
+.wrclock(~pclk), // we want to write on negedge clk
+.wraddress(fb_gb_addr),
+.wren(fb_gb_we),
+.data(fb_gb_data),
+
+//READ
+.rdclock(VGA_clk),
+.rdaddress(fb_vga_addr),
+.q(fb_vga_q)
+);
+
+
+
+
+/*
 //GB ROM (to test vga debug before dual port vram)
 ROM gbROM (
 .clk(VGA_clk), //25MHz
 .address(fb_vga_addr),
 .q(fb_vga_q)
 );
+*/
 
 
 endmodule

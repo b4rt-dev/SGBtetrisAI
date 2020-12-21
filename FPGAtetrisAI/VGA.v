@@ -100,7 +100,7 @@ begin
 	end
 	else
 	begin
-		if (v_count >= VBEGIN && v_count < VEND && h_count >= HBEGIN-1 && h_count < HEND-1)
+		if (v_count >= VBEGIN && v_count < VEND && h_count >= HBEGIN-2 && h_count < HEND-2)
 		begin
 			fb_addr <= fb_addr + 1'b1;
 		end
@@ -114,9 +114,66 @@ initial begin
     v_count = 12'd0;
 end
 
+reg data;
+
 assign VGA_r = (v_count >= VBEGIN && v_count < VEND && h_count >= HBEGIN && h_count < HEND) ? fb_q[0] : 1'b0;
-assign VGA_g = 1'b0;
+assign VGA_g = (v_count >= VBEGIN && v_count < VEND && h_count >= HBEGIN && h_count < HEND) ? data : o_h;
 assign VGA_b = (v_count >= VBEGIN && v_count < VEND && h_count >= HBEGIN && h_count < HEND) ? fb_q[1] : 1'b0;
 
+
+
+
+integer i;
+
+always @(*)
+begin
+
+	data <= 1'b0;
+
+	//board
+	for (i = 0; i < 18; i = i + 1)
+	begin
+		//row i
+		if (fb_addr == ((i*8*160) + 18))
+			data <= 1'b1;
+		if (fb_addr == ((i*8*160) + 26))
+			data <= 1'b1;
+		if (fb_addr == ((i*8*160) + 34))
+			data <= 1'b1;
+		if (fb_addr == ((i*8*160) + 42))
+			data <= 1'b1;
+		if (fb_addr == ((i*8*160) + 50))
+			data <= 1'b1;
+		if (fb_addr == ((i*8*160) + 58))
+			data <= 1'b1;
+		if (fb_addr == ((i*8*160) + 66))
+			data <= 1'b1;
+		if (fb_addr == ((i*8*160) + 74))
+			data <= 1'b1;
+		if (fb_addr == ((i*8*160) + 82))
+			data <= 1'b1;
+		if (fb_addr == ((i*8*160) + 90))
+			data <= 1'b1;
+	end
+	
+	//next piece
+	if (fb_addr == ((112*160) + 122))
+			data <= 1'b1;
+	if (fb_addr == ((112*160) + 130))
+			data <= 1'b1;
+	if (fb_addr == ((112*160) + 138))
+			data <= 1'b1;
+	if (fb_addr == ((112*160) + 146))
+			data <= 1'b1;
+			
+	if (fb_addr == ((120*160) + 122))
+			data <= 1'b1;
+	if (fb_addr == ((120*160) + 130))
+			data <= 1'b1;
+	if (fb_addr == ((120*160) + 138))
+			data <= 1'b1;
+	if (fb_addr == ((120*160) + 146))
+			data <= 1'b1;
+end
 
 endmodule
