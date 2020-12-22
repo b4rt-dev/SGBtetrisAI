@@ -101,4 +101,6 @@ set_global_assignment -name VERILOG_FILE VGA.v
 set_global_assignment -name VERILOG_FILE analyzer.v
 set_global_assignment -name QIP_FILE PLL.qip
 set_global_assignment -name QIP_FILE FB.qip
+set_global_assignment -name VERILOG_FILE UARTtx.v
+set_location_assignment PIN_49 -to tx
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
