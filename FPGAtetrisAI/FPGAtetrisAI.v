@@ -7,7 +7,7 @@ module FPGAtetrisAI
 	output wire [11:0] leds,
 
 	input  DMG_vsync, //60Hz
-	input  DMG_hsync, //9KHz
+	input  DMG_hsync, //8KHz
 	input  DMG_data0,
 	input  DMG_data1,
 	
@@ -49,6 +49,8 @@ GBreader gbreader (
 .d1(DMG_data1)
 );
 
+wire [187:0] boardString;
+
 
 //VGA debug
 VGA DebugDisplay (
@@ -59,12 +61,15 @@ VGA DebugDisplay (
 .VGA_hs(VGA_hs),
 .VGA_vs(VGA_vs),
 .fb_addr(fb_vga_addr),
-.fb_q(fb_vga_q)
+.fb_q(fb_vga_q),
+.boardString(boardString)
 );
 
 
+
+
 //Framebuffer
-FB framebuffer (
+FB framebufferDebug (
 //WRITE
 .wrclock(~pclk), // we want to write on negedge clk
 .wraddress(fb_gb_addr),
@@ -80,14 +85,12 @@ FB framebuffer (
 
 
 
-/*
-//GB ROM (to test vga debug before dual port vram)
-ROM gbROM (
-.clk(VGA_clk), //25MHz
-.address(fb_vga_addr),
-.q(fb_vga_q)
-);
-*/
 
+analyzer Analyzer (
+.clk(pclk),
+.fbdat(fb_gb_data),
+.fbrdaddress(fb_gb_addr),
+.boardString(boardString)
+);
 
 endmodule

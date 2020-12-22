@@ -8,7 +8,8 @@ module VGA(
     output VGA_vs,
 	 
 	 output reg [14:0] fb_addr,
-	 input [1:0] fb_q
+	 input [1:0] fb_q,
+	 input [187:0] boardString
 );
 
 //assign frameDrawn = o_frame;
@@ -44,7 +45,7 @@ localparam FRAME  = VA_END;             // frame lines
 reg [9:0] h_count;  // line position in pixels including blanking 
 reg [8:0] v_count;  // frame position in lines including blanking 
 
-wire o_hs, o_vs, o_de, o_h, o_v, o_frame;
+wire o_hs, o_vs, o_de;
 //assign crt_sync = !(o_hs^o_vs);
 assign VGA_hs = o_hs;
 assign VGA_vs = o_vs;
@@ -61,15 +62,6 @@ assign VGA_vs = o_vs;
 assign o_de = h_count > HA_STA & h_count <= HA_END
     & v_count > VA_STA & v_count <= VA_END; 
 
-// keep o_h and o_v bound within active pixels
-assign o_h = (o_de & h_count > HA_STA & h_count <= HA_END) ? 
-                h_count - (HA_STA + 1): 0;
-assign o_v = (o_de & v_count > VA_STA & v_count <= VA_END) ? 
-                v_count - (VA_STA + 1): 0;
-
-// o_frame: high for some ticks when last frame is drawn
-assign o_frame = (v_count == 0 & h_count < 8);
-
 
 // GB frame position
 localparam HBEGIN = 400;
@@ -82,19 +74,19 @@ always @ (posedge clk)
 begin
     if (h_count == LINE)  // end of line
     begin
-         h_count <= 0;
+         h_count <= 1'b0;
          if (v_count == FRAME) // end of frame
          begin      
-              v_count <= 0;
+              v_count <= 1'b0;
          end
          else
-              v_count <= v_count + 1;
+              v_count <= v_count + 1'b1;
     end
     else 
-         h_count <= h_count + 1;
+         h_count <= h_count + 1'b1;
 	
 	
-	if (v_count == 0)
+	if (v_count == 1'b0)
 	begin
 		fb_addr <= 15'd0;
 	end
@@ -110,17 +102,20 @@ begin
 end
 
 initial begin
-    h_count = 12'd0;
-    v_count = 12'd0;
+    h_count = 10'd0;
+    v_count = 9'd0;
 end
 
 reg data;
 
-assign VGA_r = (v_count >= VBEGIN && v_count < VEND && h_count >= HBEGIN && h_count < HEND) ? fb_q[0] : 1'b0;
-assign VGA_g = (v_count >= VBEGIN && v_count < VEND && h_count >= HBEGIN && h_count < HEND) ? data : o_h;
-assign VGA_b = (v_count >= VBEGIN && v_count < VEND && h_count >= HBEGIN && h_count < HEND) ? fb_q[1] : 1'b0;
-
-
+assign VGA_r = (v_count >= VBEGIN && v_count < VEND && h_count >= HBEGIN && h_count < HEND) ? fb_q[0] :
+					(v_count == 400 && h_count >= 300 && h_count < 488) ? boardString[h_count-300] : 1'b0;
+					
+assign VGA_g = (v_count >= VBEGIN && v_count < VEND && h_count >= HBEGIN && h_count < HEND) ? data : 
+					(v_count == 400 && h_count >= 300 && h_count < 488) ? 1'b1 : 1'b0;
+					
+assign VGA_b = (v_count >= VBEGIN && v_count < VEND && h_count >= HBEGIN && h_count < HEND) ? fb_q[1] : 
+					(v_count == 400 && h_count >= 300 && h_count < 488) ? boardString[h_count-300] : 1'b0;
 
 
 integer i;
